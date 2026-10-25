@@ -25,6 +25,6 @@ export const siteConfig = {
   /** Destinos reais. Enquanto forem `null`, os links não aparecem no rodapé. */
   links: {
     privacy: null as string | null, // ex.: "/privacidade"
-    contact: null as string | null, // ex.: "mailto:contato@homilette.com"
+    contact: "mailto:contato@homilette.com" as string | null,
   },
 };
