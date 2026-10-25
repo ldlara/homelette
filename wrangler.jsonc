@@ -9,5 +9,9 @@
     "binding": "ASSETS"
   },
   "send_email": [{ "name": "EMAIL" }],
+  "routes": [
+    { "pattern": "homilette.com", "custom_domain": true },
+    { "pattern": "www.homilette.com", "custom_domain": true }
+  ],
   "observability": { "enabled": true }
 }
