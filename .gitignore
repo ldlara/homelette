@@ -43,3 +43,8 @@ next-env.d.ts
 # local tooling
 /.taste-skill/
 /.claude/
+
+# cloudflare / opennext
+/.open-next/
+/.wrangler/
+.dev.vars
