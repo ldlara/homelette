@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Homilette — landing page
 
-## Getting Started
-
-First, run the development server:
+Landing page de pré-lançamento do Homilette (Next.js, TypeScript e Tailwind CSS).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # desenvolvimento em http://localhost:3000
+npm run build    # build de produção
+npm run start    # serve o build
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Idiomas
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+A página existe em três idiomas: `/pt` (português do Brasil), `/en` (inglês) e `/es` (espanhol). Quem abre `/` é
+redirecionado pelo idioma do navegador (`src/proxy.ts`); sem correspondência, vai para `/pt`. Há seletor de idioma no
+cabeçalho e no rodapé, `hreflang` e metadados de compartilhamento por idioma.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## O que editar
 
-## Learn More
+| O quê | Onde |
+| --- | --- |
+| Textos de cada idioma (incluindo FAQ, mensagens do formulário, metadados) | [`src/content/pt.ts`](src/content/pt.ts), [`en.ts`](src/content/en.ts), [`es.ts`](src/content/es.ts). O português define as chaves; os outros precisam ter as mesmas. |
+| Data de lançamento (`AAAA-MM-DD`) | `siteConfig.launchDate` em [`src/content/site.ts`](src/content/site.ts). Enquanto for `null`, a página mostra "Em breve", sem data nem contagem regressiva. A data é formatada em cada idioma. |
+| Só o período, se a data exata ainda não existe | `siteConfig.launchPeriod`, um texto por idioma (ex.: pt `"o primeiro semestre de 2027"`, en `"in the first half of 2027"`). |
+| Links de Privacidade e Contato | `siteConfig.links`. Só aparecem no rodapé quando preenchidos. |
+| URL pública (compartilhamento) | variável `NEXT_PUBLIC_SITE_URL`. |
+| Créditos das imagens | [`src/content/credits.ts`](src/content/credits.ts). As fotos estão em `public/images`, de acervos abertos (Wikimedia Commons). |
 
-To learn more about Next.js, take a look at the following resources:
+Para adicionar um idioma: crie `src/content/<codigo>.ts`, registre-o em `src/content/index.ts` e em `src/i18n/config.ts`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Cadastro de e-mails (o que falta conectar)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+O formulário envia para `POST /api/interesse`, que repassa o e-mail a um webhook configurado por variável de ambiente.
+**Sem webhook, nenhum e-mail é salvo** e a página informa isso honestamente (“O cadastro ainda não está disponível”).
 
-## Deploy on Vercel
+Para ativar, defina no ambiente de produção:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+WAITLIST_WEBHOOK_URL=https://seu-servico/endpoint   # recebe POST JSON { "email": "...", "source": "landing-page" }
+WAITLIST_WEBHOOK_TOKEN=...                          # opcional; enviado como Authorization: Bearer
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Qualquer resposta 2xx do webhook conta como cadastro salvo. O webhook pode ser um serviço de e-mail marketing, Zapier/Make,
+uma planilha ou um backend próprio. Para integrar direto a um provedor (Resend, Mailchimp etc.), reescreva `subscribe()` em
+[`src/lib/waitlist.ts`](src/lib/waitlist.ts) mantendo o tipo de retorno.
+
+Antes de publicar, defina também a política de privacidade e um canal de contato reais.

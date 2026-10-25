@@ -1,26 +1,114 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #f6f1e4;
+  --paper-deep: #ede5d0;
+  --sheet: #fcfaf3;
+  --ink: #18241e;
+  --muted: #3f4c44;
+  --green: #14392c;
+  --green-soft: #1f5240;
+  --gold: #a98a4b;
+  --gold-ink: #7a5c1e;
+  --gold-light: #d9bf82;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --margin: clamp(16px, 4vw, 32px);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-sheet: var(--sheet);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-green: var(--green);
+  --color-green-soft: var(--green-soft);
+  --color-gold: var(--gold);
+  --color-gold-ink: var(--gold-ink);
+  --color-gold-light: var(--gold-light);
+  --font-sans: var(--font-body), system-ui, sans-serif;
+  --font-serif: var(--font-display), Georgia, serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html {
+  background: var(--paper);
+  scroll-padding-top: 5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 3px solid var(--gold-ink);
+  outline-offset: 3px;
+}
+.on-dark :focus-visible {
+  outline-color: var(--gold-light);
+}
+
+::selection {
+  background: var(--gold-light);
+  color: var(--green);
+}
+
+/* Fotografias: um único tratamento para todas */
+.photo {
+  filter: grayscale(1) contrast(1.05);
+}
+.photo-dim {
+  filter: grayscale(1) brightness(0.42);
+}
+
+/* Título de seção: um único passo de tamanho para todas */
+.h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(2.25rem, 4.4vw, 4rem);
+  line-height: 1.04;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  font-variation-settings: "opsz" 144, "SOFT" 30;
+}
+
+/* Entrada: o conteúdo só fica oculto quando o script confirma que pode revelá-lo */
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    transition:
+      opacity 0.8s var(--ease) var(--d, 0ms),
+      transform 0.8s var(--ease) var(--d, 0ms);
+  }
+  html[data-reveal-ready] [data-reveal]:not(.is-in) {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .press {
+    transition:
+      background-color 0.2s var(--ease),
+      transform 0.15s var(--ease);
+  }
+  .press:active {
+    transform: translateY(2px);
+  }
+  .drift {
+    animation: drift 24s ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    from {
+      transform: scale(1.04) translate3d(0, 0, 0);
+    }
+    to {
+      transform: scale(1.12) translate3d(-1.5%, -1%, 0);
+    }
+  }
 }
